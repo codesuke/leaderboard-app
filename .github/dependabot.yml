@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # Generic — keeps the workflow files themselves updated regardless of stack.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  # TODO (BOOTSTRAP.md step 4): add an entry for the app's own dependencies
+  # once the stack is chosen, e.g.:
+  #
+  # - package-ecosystem: npm
+  #   directory: /client
+  #   schedule:
+  #     interval: weekly
+  #   open-pull-requests-limit: 5
+  #
+  # - package-ecosystem: docker
+  #   directory: /client
+  #   schedule:
+  #     interval: weekly
+  #
+  # - package-ecosystem: pip
+  #   directory: /
+  #   schedule:
+  #     interval: weekly

@@ -1,0 +1,36 @@
+name: CodeQL
+
+# TODO (BOOTSTRAP.md step 4): this workflow is a stub. Set the `languages`
+# matrix entry below for this project's actual stack (e.g.
+# javascript-typescript, python, go), then switch the trigger from
+# `workflow_dispatch` (manual only) to push/pull_request/schedule. Reference:
+# https://github.com/VirtuNode-dev/ListItUp/blob/main/.github/workflows/codeql.yml
+#
+# on:
+#   pull_request:
+#     branches: [main]
+#   push:
+#     branches: [main]
+#   schedule:
+#     - cron: "17 3 * * 1"
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # TODO: set `languages` to this project's stack, e.g. javascript-typescript
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: TODO
+
+      - uses: github/codeql-action/analyze@v4

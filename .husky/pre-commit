@@ -1,0 +1,4 @@
+npx lint-staged
+
+# TODO (BOOTSTRAP.md step 4): add this project's lint/typecheck/test commands here, e.g.:
+# cd client && pnpm run lint && pnpm run typecheck && pnpm test

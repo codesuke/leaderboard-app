@@ -1,0 +1,23 @@
+{
+  "name": "{project-slug}",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Repo-level tooling for {Project Name}.",
+  "license": "MIT",
+  "author": "{AUTHOR}",
+  "repository": {
+    "type": "git",
+    "url": "{REPO_URL}.git"
+  },
+  "bugs": {
+    "url": "{REPO_URL}/issues"
+  },
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9",
+    "lint-staged": "^15",
+    "prettier": "^3"
+  }
+}
