@@ -1,19 +1,22 @@
 {
-  "name": "{project-slug}",
+  "name": "leaderboard-app",
   "version": "0.0.0",
   "private": true,
-  "description": "Repo-level tooling for {Project Name}.",
+  "description": "Repo-level tooling for Leaderboard.",
   "license": "MIT",
-  "author": "{AUTHOR}",
+  "author": "Codesuke",
   "repository": {
     "type": "git",
-    "url": "{REPO_URL}.git"
+    "url": "https://github.com/codesuke/leaderboard-app.git"
   },
   "bugs": {
-    "url": "{REPO_URL}/issues"
+    "url": "https://github.com/codesuke/leaderboard-app/issues"
   },
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "dev": "pnpm --dir leaderboard dev",
+    "build": "pnpm --dir leaderboard build",
+    "lint": "pnpm --dir leaderboard lint"
   },
   "devDependencies": {
     "husky": "^9",

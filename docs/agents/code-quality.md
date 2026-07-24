@@ -1,6 +1,6 @@
 # Code Quality
 
-The stack-agnostic bar for "clean" code in this repo. This condenses the catalog used by the `/smell` skill down to what applies regardless of language or framework; see the skill itself for the full catalog and severity model. Stack-specific rules (TypeScript, React, a particular framework, etc.) belong in `docs/agents/stack-conventions.md`, not here.
+The stack-agnostic bar for "clean" code in this repo. This condenses the catalog used by the `/smell` skill down to what applies regardless of language or framework; see the skill itself for the full catalog and severity model. Stack-specific rules (TypeScript, React, Next.js) belong in `docs/agents/nextjs-conventions.md`, not here.
 
 ## Before Opening a PR
 
@@ -16,4 +16,4 @@ Run `/smell` against the target branch on any non-trivial `feature`, `refactor`,
 - **Comments explain why, not what.** Delete obsolete, redundant, or commented-out code rather than leaving it (`CC.C2`, `CC.C3`, `CC.C5`).
 - **No dead code.** Remove unused functions, branches, and symbols instead of leaving them "just in case" (`CC.F4`, `CC.G9`).
 
-See `docs/agents/stack-conventions.md` for language- and framework-specific rules (type safety, rendering boundaries, data-fetching patterns, etc.), and the `/smell` skill's full catalog (`Clean Code`, `Gang of Four`, and any language-specific sections) for anything not covered here.
+See `docs/agents/nextjs-conventions.md` for language- and framework-specific rules (type safety, rendering boundaries, data-fetching patterns, etc.), and the `/smell` skill's full catalog (`Clean Code`, `Gang of Four`, and any language-specific sections) for anything not covered here.

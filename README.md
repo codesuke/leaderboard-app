@@ -1,6 +1,6 @@
-# {Project Name}
+# Leaderboard
 
-{One or two sentence description of what this project is.}
+{One or two sentence description of what this project is — TBD, see `CONTEXT.md`.}
 
 > This repository was created from **Starter-Pack**, a template repo that ships a
 > stack-agnostic "operating system" for building with AI coding agents: durable
@@ -10,7 +10,16 @@
 
 ## Getting Started
 
-{Install steps, environment setup, how to run the project locally.}
+The app lives in [`leaderboard/`](leaderboard/), a Next.js (App Router) project.
+
+```bash
+corepack enable
+cd leaderboard
+pnpm install
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
 
 ## Documentation
 
@@ -23,13 +32,6 @@ This repo keeps durable project knowledge in-tree instead of chat history:
 - [`Architecture.md`](Architecture.md) — repo layout and where new code belongs.
 - [`docs/`](docs/README.md) — QnA sessions, specs, architecture decisions, and agent configuration. See its README for the full operating model.
 
-## Using This As A Template
-
-If you just used **Use this template** to create this repo, you are not done yet:
-
-1. Open [`BOOTSTRAP.md`](BOOTSTRAP.md) and work through the checklist.
-2. Delete this section (and `BOOTSTRAP.md` itself) once the checklist is complete.
-
 ## License
 
-{See [`LICENSE`](LICENSE).}
+See [`LICENSE`](LICENSE).

@@ -4,7 +4,7 @@ Issues and PRDs for this repo live as GitHub Issues. Use the `gh` CLI for issue 
 
 ## Repository
 
-`{ORG}/{REPO}`
+`codesuke/leaderboard-app`
 
 ## Conventions
 

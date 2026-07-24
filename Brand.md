@@ -1,6 +1,6 @@
 # Brand
 
-Product voice, positioning, and naming for {Project Name}. Agents should read this before writing user-facing copy, naming a feature, or making a tone call in docs, UI text, or marketing surfaces.
+Product voice, positioning, and naming for Leaderboard. Agents should read this before writing user-facing copy, naming a feature, or making a tone call in docs, UI text, or marketing surfaces.
 
 ## Positioning
 

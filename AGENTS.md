@@ -8,7 +8,7 @@ Claude Code imports these automatically into every session in this repo (do not 
 
 @Architecture.md
 @docs/agents/code-quality.md
-@docs/agents/stack-conventions.md
+@docs/agents/nextjs-conventions.md
 
 ## Working Rules
 
@@ -20,7 +20,7 @@ Claude Code imports these automatically into every session in this repo (do not 
 - Put planned specs in `docs/Specs-Planned/` and move completed specs to `docs/Specs-Completed/` when shipped.
 - Capture `grill-with-docs` sessions and their resolved answers in `docs/QnA/`.
 - Avoid broad rewrites unless a spec or ADR explicitly calls for them.
-- Follow `docs/agents/code-quality.md` for clean-code expectations and `docs/agents/stack-conventions.md` for stack-specific rules once that file is filled in (see `BOOTSTRAP.md`).
+- Follow `docs/agents/code-quality.md` for clean-code expectations and `docs/agents/nextjs-conventions.md` for Next.js-specific rules.
 
 ## Agent Skills
 
@@ -38,7 +38,7 @@ This is a single-context repo with root domain docs and ADRs in `docs/ADR/`. See
 
 ### Code quality
 
-Stack-agnostic clean-code baseline, plus stack-specific rules once configured. See `docs/agents/code-quality.md` and `docs/agents/stack-conventions.md`.
+Stack-agnostic clean-code baseline, plus Next.js-specific rules. See `docs/agents/code-quality.md` and `docs/agents/nextjs-conventions.md`.
 
 ## Preferred Skill Workflow
 

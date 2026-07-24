@@ -6,21 +6,8 @@ updates:
     schedule:
       interval: weekly
 
-  # TODO (BOOTSTRAP.md step 4): add an entry for the app's own dependencies
-  # once the stack is chosen, e.g.:
-  #
-  # - package-ecosystem: npm
-  #   directory: /client
-  #   schedule:
-  #     interval: weekly
-  #   open-pull-requests-limit: 5
-  #
-  # - package-ecosystem: docker
-  #   directory: /client
-  #   schedule:
-  #     interval: weekly
-  #
-  # - package-ecosystem: pip
-  #   directory: /
-  #   schedule:
-  #     interval: weekly
+  - package-ecosystem: npm
+    directory: /leaderboard
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

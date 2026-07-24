@@ -2,10 +2,10 @@
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in {Project Name}, please report it privately rather than opening a public issue.
+If you discover a security vulnerability in Leaderboard, please report it privately rather than opening a public issue.
 
-- **Contact**: {SECURITY_CONTACT_EMAIL, or a GitHub Security Advisory link once the repo is public}
-- **Response time**: We aim to acknowledge reports within {N} business days.
+- **Contact**: codesuke@gmail.com
+- **Response time**: We aim to acknowledge reports within 5 business days.
 
 Please include:
 

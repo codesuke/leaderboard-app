@@ -1,4 +1,4 @@
-# Contributing to {Project Name}
+# Contributing to Leaderboard
 
 Thanks for considering a contribution. This repo is built collaboratively by humans and AI agents, so the same rules apply to both — the source of truth is always the repository, not a chat history or a prior conversation.
 
@@ -24,7 +24,7 @@ Read these first, in this order:
 1. [`AGENTS.md`](AGENTS.md) — the working rules for this repo, including test-driven development and documentation expectations.
 2. [`CONTEXT.md`](CONTEXT.md) — the product glossary. Use these exact terms in code, issues, and PRs.
 3. [`Architecture.md`](Architecture.md) — repo layout and where new code belongs.
-4. [`docs/agents/code-quality.md`](docs/agents/code-quality.md) and [`docs/agents/stack-conventions.md`](docs/agents/stack-conventions.md) — the clean-code and stack-specific conventions this codebase follows.
+4. [`docs/agents/code-quality.md`](docs/agents/code-quality.md) and [`docs/agents/nextjs-conventions.md`](docs/agents/nextjs-conventions.md) — the clean-code and stack-specific conventions this codebase follows.
 
 If a term or convention is missing from those docs, that's worth raising in your issue or PR rather than guessing.
 
@@ -32,7 +32,7 @@ If a term or convention is missing from those docs, that's worth raising in your
 
 Code isn't the only useful contribution:
 
-- **Report a bug** — open an [issue]({REPO_URL}/issues/new) with reproduction steps, expected vs. actual behavior, and your environment.
+- **Report a bug** — open an [issue](https://github.com/codesuke/leaderboard-app/issues/new) with reproduction steps, expected vs. actual behavior, and your environment.
 - **Propose a feature** — open an issue describing the problem you're trying to solve before proposing a specific solution; see `docs/agents/domain.md` for how this repo turns fuzzy ideas into specs.
 - **Improve docs** — typos, unclear setup steps, and missing explanations are all fair game for a PR.
 - **Review a PR** — thoughtful feedback on an open PR is as valuable as writing one.
@@ -42,15 +42,19 @@ Code isn't the only useful contribution:
 
 ### Prerequisites
 
-{List runtime, package manager, database, and any external service dependencies for local dev.}
+- Node.js 22+
+- pnpm (via `corepack enable`)
 
 ### Steps
 
 ```bash
-git clone {REPO_URL}.git
-cd {project-directory}
+git clone https://github.com/codesuke/leaderboard-app.git
+cd leaderboard-app
 
-# {Install, configure, and run steps go here.}
+corepack enable
+cd leaderboard
+pnpm install
+pnpm dev
 ```
 
 ### Troubleshooting
@@ -71,7 +75,7 @@ Run lint and typecheck (or their stack equivalents) before opening a PR — both
 
 ## Coding Standards
 
-The full catalog lives in [`docs/agents/code-quality.md`](docs/agents/code-quality.md) and [`docs/agents/stack-conventions.md`](docs/agents/stack-conventions.md); the headline rules:
+The full catalog lives in [`docs/agents/code-quality.md`](docs/agents/code-quality.md) and [`docs/agents/nextjs-conventions.md`](docs/agents/nextjs-conventions.md); the headline rules:
 
 - Functions do one thing, at one level of abstraction, with no more than 3 arguments and no boolean-flag parameters that make a function do two things.
 - Names reveal intent; duplication is refactored into shared logic rather than copy-adapted.

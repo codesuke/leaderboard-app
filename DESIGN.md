@@ -1,6 +1,6 @@
 # Design
 
-Interface direction for {Project Name}: layout, interaction, and visual language. Agents should read this before building or reviewing UI.
+Interface direction for Leaderboard: layout, interaction, and visual language. Agents should read this before building or reviewing UI.
 
 ## Visual Reference
 
