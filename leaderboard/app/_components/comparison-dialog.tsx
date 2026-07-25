@@ -73,7 +73,7 @@ export function ComparisonDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] max-w-4xl overflow-y-auto">
+      <DialogContent className="max-h-[85vh] w-[95vw] sm:max-w-6xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Compare Students</DialogTitle>
         </DialogHeader>
@@ -103,7 +103,7 @@ export function ComparisonDialog({
 
             <ChartContainer
               config={chartConfig}
-              className="mx-auto h-72 w-full max-w-md"
+              className="mx-auto h-80 w-full max-w-xl"
             >
               <RadarChart data={chartData}>
                 <ChartTooltip content={<ChartTooltipContent />} />
