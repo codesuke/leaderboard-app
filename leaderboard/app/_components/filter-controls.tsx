@@ -104,36 +104,38 @@ export function FilterControls({
 
         <div className="flex flex-col gap-1.5">
           <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Roll Number from
+            Roll Number range
           </Label>
-          <Input
-            className="w-40 rounded-full"
-            value={filters.rollNumberMin ?? ""}
-            onChange={(event) =>
-              onChange({
-                ...filters,
-                rollNumberMin: event.target.value || undefined,
-              })
-            }
-          />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Roll Number to
-          </Label>
-          <Input
-            className="w-40 rounded-full"
-            value={filters.rollNumberMax ?? ""}
-            onChange={(event) =>
-              onChange({
-                ...filters,
-                rollNumberMax: event.target.value || undefined,
-              })
-            }
-          />
           <span className="text-xs text-muted-foreground">
             Alphanumeric range, not numeric
           </span>
+          <div className="flex items-center gap-2">
+            <Input
+              aria-label="Roll Number from"
+              placeholder="From"
+              className="w-28 rounded-full"
+              value={filters.rollNumberMin ?? ""}
+              onChange={(event) =>
+                onChange({
+                  ...filters,
+                  rollNumberMin: event.target.value || undefined,
+                })
+              }
+            />
+            <span className="text-muted-foreground">–</span>
+            <Input
+              aria-label="Roll Number to"
+              placeholder="To"
+              className="w-28 rounded-full"
+              value={filters.rollNumberMax ?? ""}
+              onChange={(event) =>
+                onChange({
+                  ...filters,
+                  rollNumberMax: event.target.value || undefined,
+                })
+              }
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
