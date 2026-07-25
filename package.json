@@ -14,8 +14,8 @@
   },
   "scripts": {
     "prepare": "husky",
-    "dev": "pnpm --dir leaderboard dev",
-    "build": "pnpm --dir leaderboard build",
+    "dev": "pnpm --dir leaderboard install && pnpm --dir leaderboard dev",
+    "build": "pnpm --dir leaderboard install --frozen-lockfile && pnpm --dir leaderboard build",
     "lint": "pnpm --dir leaderboard lint"
   },
   "devDependencies": {
