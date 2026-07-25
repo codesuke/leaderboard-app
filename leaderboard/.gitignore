@@ -33,8 +33,11 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
-# local data (contains student PII — never commit or serve from public/)
-/data
+# raw source export (contains student PII) — the converted data/students.json
+# IS committed deliberately so the deployed app has data to read; see
+# scripts/csv-to-json.mjs and docs/ADR/0002-static-csv-data-source.md.
+# Never move either file into public/ — that folder is served verbatim.
+/data/*.csv
 
 # vercel
 .vercel

@@ -44,4 +44,4 @@ The root `package.json` only holds repo-wide tooling (`husky`, `lint-staged`, `p
 
 No database or ORM has been chosen yet. When one is added, record the decision as an ADR under `docs/ADR/` and update this section with the chosen tool and the rule for how schema changes are made.
 
-`leaderboard/data/` holds local source data (e.g. `training_groups_July.csv`) containing student PII. It is git-ignored and must never be moved into `public/` — that folder is served verbatim by Next.js. Read it server-side only.
+`leaderboard/data/` holds Student data containing PII. `training_groups_July.csv` is the raw source export — git-ignored, never committed. `students.json` is a converted copy of it (via `leaderboard/scripts/csv-to-json.mjs`) that **is committed** so the deployed app has data to read — see [ADR 0002](docs/ADR/0002-static-csv-data-source.md) for why, and its consequences. Neither file may ever be moved into `public/` — that folder is served verbatim by Next.js. Read `data/` server-side only.

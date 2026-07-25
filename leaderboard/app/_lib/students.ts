@@ -35,9 +35,11 @@ export function parseTrainingGroup(raw: string): {
   return { batch: batch as Batch, provisional };
 }
 
-export type AttendanceStatus = "Very Sincere" | "Sincere" | "Poor" | "Very Poor";
+export type AttendanceStatus =
+  "Very Sincere" | "Sincere" | "Poor" | "Very Poor";
 
-export type CodingGrade = "Beginner" | "Novice" | "Learner" | "Proficient" | "Expert";
+export type CodingGrade =
+  "Beginner" | "Novice" | "Learner" | "Proficient" | "Expert";
 
 export interface TestScores {
   practiceTest1: number;
@@ -105,9 +107,14 @@ export function loadStudents(csvText: string): Student[] {
   });
 }
 
-const CSV_PATH = path.join(process.cwd(), "data", "training_groups_July.csv");
+export function parseStudentsJson(jsonText: string): Student[] {
+  const rows: RawCsvRow[] = JSON.parse(jsonText);
+  return rows.map(parseStudentRow);
+}
+
+const STUDENTS_JSON_PATH = path.join(process.cwd(), "data", "students.json");
 
 export async function loadStudentsFromDisk(): Promise<Student[]> {
-  const csvText = await readFile(CSV_PATH, "utf-8");
-  return loadStudents(csvText);
+  const jsonText = await readFile(STUDENTS_JSON_PATH, "utf-8");
+  return parseStudentsJson(jsonText);
 }

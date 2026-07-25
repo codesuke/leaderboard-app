@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { loadStudents, parseStudentRow, parseTrainingGroup } from "./students";
+import {
+  loadStudents,
+  parseStudentRow,
+  parseStudentsJson,
+  parseTrainingGroup,
+} from "./students";
 
 describe("parseTrainingGroup", () => {
   it("normalizes a plain training group into its Batch, not provisional", () => {
@@ -171,6 +176,55 @@ describe("loadStudents", () => {
     ].join("\r\n");
 
     expect(loadStudents(csvText)).toEqual([
+      {
+        rollNumber: "2401330120211",
+        name: "VEDANT PANDEY",
+        branch: "CS",
+        batch: "S1",
+        provisional: false,
+        score: 99.3,
+        attendanceStatus: "Very Sincere",
+        assessmentAttendance: 5,
+        codingGrade: "Expert",
+        testScores: {
+          practiceTest1: 98.1,
+          practiceTest2: 96.67,
+          practiceTest3: 92.14,
+          practiceTest4: 86.43,
+          mockTest: 99.05,
+          onlineAssessment: 79.3,
+          written: 20,
+        },
+      },
+    ]);
+  });
+});
+
+describe("parseStudentsJson", () => {
+  it("parses a JSON array of raw rows into Students, in array order", () => {
+    const jsonText = JSON.stringify([
+      {
+        S_No: "1",
+        University_Roll_No: "2401330120211",
+        Name: "VEDANT PANDEY",
+        Branch: "CS",
+        Status: "Very Sincere",
+        P_Test_1: "98.1",
+        P_Test_2: "96.67",
+        P_Test_3: "92.14",
+        P_Test_4: "86.43",
+        M_Test_5: "99.05",
+        Attendance_in_Assessment: "5",
+        Online_Assessment_Grade_80: "79.3",
+        Written_Grade: "A",
+        Written_Score_20: "20",
+        Final_Score_100: "99.3",
+        Coding_Grade: "Expert",
+        Training_Group: "EM-S1",
+      },
+    ]);
+
+    expect(parseStudentsJson(jsonText)).toEqual([
       {
         rollNumber: "2401330120211",
         name: "VEDANT PANDEY",
