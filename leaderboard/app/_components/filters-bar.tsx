@@ -1,33 +1,23 @@
 "use client";
 
-import { XIcon } from "lucide-react";
+import { useState } from "react";
+import { FilterIcon, XIcon } from "lucide-react";
 import {
   describeActiveFilters,
   removeFilterChip,
   type StudentFilters,
 } from "@/app/_lib/filtering";
-import { BATCH_ORDER } from "@/app/_lib/ranking";
 import { Badge } from "@/components/ui/badge";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Slider } from "@/components/ui/slider";
-import { MultiSelectFilter } from "./multi-select-filter";
-
-const ATTENDANCE_STATUS_OPTIONS = [
-  "Very Sincere",
-  "Sincere",
-  "Poor",
-  "Very Poor",
-] as const;
-const CODING_GRADE_OPTIONS = [
-  "Beginner",
-  "Novice",
-  "Learner",
-  "Proficient",
-  "Expert",
-] as const;
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { FilterControls } from "./filter-controls";
 
 interface FiltersBarProps {
   filters: StudentFilters;
@@ -36,167 +26,92 @@ interface FiltersBarProps {
 }
 
 export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
-  const scoreRange: [number, number] = [
-    filters.scoreMin ?? 0,
-    filters.scoreMax ?? 100,
-  ];
+  const [sheetOpen, setSheetOpen] = useState(false);
   const chips = describeActiveFilters(filters);
 
-  return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-xl shadow-black/30 ring-1 ring-white/[0.03]">
-      {chips.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
-          {chips.map((chip) => (
-            <Badge
-              key={chip.key}
-              variant="outline"
-              className="gap-1 rounded-full pr-1.5"
-            >
-              {chip.label}
-              <button
-                type="button"
-                aria-label={`Remove ${chip.label} filter`}
-                className="rounded-full p-0.5 hover:bg-muted"
-                onClick={() => onChange(removeFilterChip(filters, chip.key))}
-              >
-                <XIcon className="size-3" />
-              </button>
-            </Badge>
-          ))}
+  const chipsRow = chips.length > 0 && (
+    <div className="flex flex-wrap items-center gap-2">
+      {chips.map((chip) => (
+        <Badge
+          key={chip.key}
+          variant="outline"
+          className="gap-1 rounded-full pr-1.5"
+        >
+          {chip.label}
           <button
             type="button"
-            className="text-xs text-muted-foreground hover:text-foreground"
-            onClick={() => onChange({})}
+            aria-label={`Remove ${chip.label} filter`}
+            className="rounded-full p-0.5 hover:bg-muted"
+            onClick={() => onChange(removeFilterChip(filters, chip.key))}
           >
-            Clear all
+            <XIcon className="size-3" />
           </button>
-        </div>
-      )}
-
-      <div className="flex flex-wrap items-center gap-2.5">
-        <MultiSelectFilter
-          label="Batch"
-          options={[...BATCH_ORDER]}
-          selected={filters.batches ?? []}
-          onChange={(batches) =>
-            onChange({
-              ...filters,
-              batches: batches as StudentFilters["batches"],
-            })
-          }
-        />
-        <MultiSelectFilter
-          label="Branch"
-          options={branches}
-          selected={filters.branches ?? []}
-          onChange={(branchSelection) =>
-            onChange({ ...filters, branches: branchSelection })
-          }
-        />
-        <MultiSelectFilter
-          label="Attendance Status"
-          options={[...ATTENDANCE_STATUS_OPTIONS]}
-          selected={filters.attendanceStatuses ?? []}
-          onChange={(value) =>
-            onChange({
-              ...filters,
-              attendanceStatuses: value as StudentFilters["attendanceStatuses"],
-            })
-          }
-        />
-        <MultiSelectFilter
-          label="Coding Grade"
-          options={[...CODING_GRADE_OPTIONS]}
-          selected={filters.codingGrades ?? []}
-          onChange={(value) =>
-            onChange({
-              ...filters,
-              codingGrades: value as StudentFilters["codingGrades"],
-            })
-          }
-        />
-      </div>
-
-      <Separator />
-
-      <div className="flex flex-wrap items-end gap-8">
-        <div className="flex w-64 flex-col gap-2.5">
-          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Score: {scoreRange[0]} - {scoreRange[1]}
-          </Label>
-          <Slider
-            value={scoreRange}
-            min={0}
-            max={100}
-            step={1}
-            onValueChange={(value) => {
-              const [scoreMin, scoreMax] = value as number[];
-              onChange({ ...filters, scoreMin, scoreMax });
-            }}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Roll Number from
-          </Label>
-          <Input
-            className="w-40 rounded-full"
-            value={filters.rollNumberMin ?? ""}
-            onChange={(event) =>
-              onChange({
-                ...filters,
-                rollNumberMin: event.target.value || undefined,
-              })
-            }
-          />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Roll Number to
-          </Label>
-          <Input
-            className="w-40 rounded-full"
-            value={filters.rollNumberMax ?? ""}
-            onChange={(event) =>
-              onChange({
-                ...filters,
-                rollNumberMax: event.target.value || undefined,
-              })
-            }
-          />
-          <span className="text-xs text-muted-foreground">
-            Alphanumeric range, not numeric
-          </span>
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Search
-          </Label>
-          <Input
-            className="w-56 rounded-full"
-            placeholder="Name or Roll Number"
-            value={filters.search ?? ""}
-            onChange={(event) =>
-              onChange({ ...filters, search: event.target.value || undefined })
-            }
-          />
-        </div>
-
-        <Label className="flex items-center gap-2 text-sm">
-          <Checkbox
-            checked={filters.provisionalOnly ?? false}
-            onCheckedChange={(checked) =>
-              onChange({
-                ...filters,
-                provisionalOnly: checked === true || undefined,
-              })
-            }
-          />
-          Provisional only
-        </Label>
-      </div>
+        </Badge>
+      ))}
+      <button
+        type="button"
+        className="text-xs text-muted-foreground hover:text-foreground"
+        onClick={() => onChange({})}
+      >
+        Clear all
+      </button>
     </div>
+  );
+
+  return (
+    <>
+      <div className="hidden flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-xl shadow-black/30 ring-1 ring-white/[0.03] lg:flex">
+        {chipsRow}
+        <FilterControls
+          filters={filters}
+          onChange={onChange}
+          branches={branches}
+        />
+      </div>
+
+      <div className="flex flex-col gap-3 lg:hidden">
+        {chipsRow}
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+          <SheetTrigger
+            render={
+              <Button variant="outline" className="w-fit rounded-full px-4">
+                <FilterIcon data-icon="inline-start" />
+                Filters
+                {chips.length > 0 && (
+                  <Badge className="bg-primary/15 text-primary">
+                    {chips.length}
+                  </Badge>
+                )}
+              </Button>
+            }
+          />
+          <SheetContent
+            side="bottom"
+            className="max-h-[85vh] overflow-y-auto rounded-t-2xl"
+          >
+            <SheetHeader>
+              <SheetTitle>Filters</SheetTitle>
+            </SheetHeader>
+            <div className="px-4 pb-4">
+              <FilterControls
+                filters={filters}
+                onChange={onChange}
+                branches={branches}
+              />
+            </div>
+            <SheetFooter className="flex-row justify-between">
+              <Button
+                variant="ghost"
+                onClick={() => onChange({})}
+                disabled={chips.length === 0}
+              >
+                Clear all
+              </Button>
+              <Button onClick={() => setSheetOpen(false)}>Done</Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </>
   );
 }
