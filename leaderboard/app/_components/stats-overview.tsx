@@ -33,9 +33,9 @@ export function StatsOverview({ stats, batchDistribution }: StatsOverviewProps) 
         <StatCard label="Batches" value={stats.batchCount.toLocaleString()} />
       </div>
 
-      <Card className="md:w-96">
+      <Card className="shadow-xl shadow-black/30 ring-1 ring-white/[0.03] md:w-[28rem]">
         <CardHeader>
-          <CardTitle className="text-sm font-medium text-muted-foreground">
+          <CardTitle className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             Students per Batch
           </CardTitle>
         </CardHeader>
@@ -63,9 +63,11 @@ export function StatsOverview({ stats, batchDistribution }: StatsOverviewProps) 
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <Card>
+    <Card className="shadow-xl shadow-black/30 ring-1 ring-white/[0.03] transition-shadow hover:shadow-2xl">
       <CardHeader>
-        <CardTitle className="text-xs font-medium text-muted-foreground">{label}</CardTitle>
+        <CardTitle className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+          {label}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-2xl font-semibold text-foreground">{value}</p>

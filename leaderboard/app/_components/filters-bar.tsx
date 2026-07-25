@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { MultiSelectFilter } from "./multi-select-filter";
@@ -24,8 +25,8 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
   const scoreRange: [number, number] = [filters.scoreMin ?? 0, filters.scoreMax ?? 100];
 
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-border bg-card p-4">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-xl shadow-black/30 ring-1 ring-white/[0.03]">
+      <div className="flex flex-wrap items-center gap-2.5">
         <MultiSelectFilter
           label="Batch"
           options={[...BATCH_ORDER]}
@@ -41,12 +42,14 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
           onChange={(branchSelection) => onChange({ ...filters, branches: branchSelection })}
         />
 
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs text-muted-foreground">Attendance Status</Label>
+        <div className="flex flex-col gap-1.5">
+          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            Attendance Status
+          </Label>
           <ToggleGroup
             multiple
             variant="outline"
-            size="sm"
+            spacing={0}
             value={filters.attendanceStatuses ?? []}
             onValueChange={(value) =>
               onChange({
@@ -56,26 +59,28 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
             }
           >
             {ATTENDANCE_STATUS_OPTIONS.map((status) => (
-              <ToggleGroupItem key={status} value={status}>
+              <ToggleGroupItem key={status} value={status} className="px-3.5">
                 {status}
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs text-muted-foreground">Coding Grade</Label>
+        <div className="flex flex-col gap-1.5">
+          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            Coding Grade
+          </Label>
           <ToggleGroup
             multiple
             variant="outline"
-            size="sm"
+            spacing={0}
             value={filters.codingGrades ?? []}
             onValueChange={(value) =>
               onChange({ ...filters, codingGrades: value as StudentFilters["codingGrades"] })
             }
           >
             {CODING_GRADE_OPTIONS.map((grade) => (
-              <ToggleGroupItem key={grade} value={grade}>
+              <ToggleGroupItem key={grade} value={grade} className="px-3.5">
                 {grade}
               </ToggleGroupItem>
             ))}
@@ -84,7 +89,7 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
 
         <Button
           variant="ghost"
-          size="sm"
+          className="rounded-full text-muted-foreground hover:text-foreground"
           onClick={() => onChange({})}
           disabled={Object.keys(filters).length === 0}
         >
@@ -93,9 +98,11 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
         </Button>
       </div>
 
-      <div className="flex flex-wrap items-end gap-6">
-        <div className="flex w-56 flex-col gap-2">
-          <Label className="text-xs text-muted-foreground">
+      <Separator />
+
+      <div className="flex flex-wrap items-end gap-8">
+        <div className="flex w-64 flex-col gap-2.5">
+          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
             Score: {scoreRange[0]} - {scoreRange[1]}
           </Label>
           <Slider
@@ -110,20 +117,24 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs text-muted-foreground">Roll Number from</Label>
+        <div className="flex flex-col gap-1.5">
+          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            Roll Number from
+          </Label>
           <Input
-            className="w-40"
+            className="w-40 rounded-full"
             value={filters.rollNumberMin ?? ""}
             onChange={(event) =>
               onChange({ ...filters, rollNumberMin: event.target.value || undefined })
             }
           />
         </div>
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs text-muted-foreground">Roll Number to</Label>
+        <div className="flex flex-col gap-1.5">
+          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            Roll Number to
+          </Label>
           <Input
-            className="w-40"
+            className="w-40 rounded-full"
             value={filters.rollNumberMax ?? ""}
             onChange={(event) =>
               onChange({ ...filters, rollNumberMax: event.target.value || undefined })
@@ -131,10 +142,12 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <Label className="text-xs text-muted-foreground">Search</Label>
+        <div className="flex flex-col gap-1.5">
+          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            Search
+          </Label>
           <Input
-            className="w-56"
+            className="w-56 rounded-full"
             placeholder="Name or Roll Number"
             value={filters.search ?? ""}
             onChange={(event) =>

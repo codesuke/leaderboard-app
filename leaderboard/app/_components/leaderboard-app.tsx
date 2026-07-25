@@ -87,12 +87,16 @@ export function LeaderboardApp({ students }: LeaderboardAppProps) {
         <p className="text-sm text-muted-foreground">
           {displayed.length.toLocaleString()} Students
         </p>
-        <Button size="sm" disabled={selected.length === 0} onClick={() => setComparisonOpen(true)}>
+        <Button
+          className="rounded-full px-5 shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/30"
+          disabled={selected.length === 0}
+          onClick={() => setComparisonOpen(true)}
+        >
           Compare ({selected.length})
         </Button>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border border-border bg-card">
+      <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-xl shadow-black/30 ring-1 ring-white/[0.03]">
         <StudentTable
           students={pageItems}
           sortColumn={sortColumn}
@@ -105,8 +109,8 @@ export function LeaderboardApp({ students }: LeaderboardAppProps) {
 
       <nav className="flex items-center justify-between text-sm">
         <Button
-          variant="ghost"
-          size="sm"
+          variant="outline"
+          className="rounded-full px-4"
           disabled={page <= 1}
           onClick={() => setPage((current) => current - 1)}
         >
@@ -116,8 +120,8 @@ export function LeaderboardApp({ students }: LeaderboardAppProps) {
           Page {page} of {totalPages}
         </span>
         <Button
-          variant="ghost"
-          size="sm"
+          variant="outline"
+          className="rounded-full px-4"
           disabled={page >= totalPages}
           onClick={() => setPage((current) => current + 1)}
         >

@@ -42,10 +42,10 @@ export function MultiSelectFilter({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         render={
-          <Button variant="outline" size="sm">
+          <Button variant="outline" className="rounded-full px-4">
             {label}
             {selected.length > 0 && (
-              <Badge variant="secondary">{selected.length}</Badge>
+              <Badge className="bg-primary/15 text-primary">{selected.length}</Badge>
             )}
             <ChevronDownIcon data-icon="inline-end" />
           </Button>
