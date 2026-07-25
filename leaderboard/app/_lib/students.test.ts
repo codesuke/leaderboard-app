@@ -56,6 +56,15 @@ describe("parseStudentRow", () => {
       attendanceStatus: "Very Sincere",
       assessmentAttendance: 5,
       codingGrade: "Expert",
+      testScores: {
+        practiceTest1: 98.1,
+        practiceTest2: 96.67,
+        practiceTest3: 92.14,
+        practiceTest4: 86.43,
+        mockTest: 99.05,
+        onlineAssessment: 79.3,
+        written: 20,
+      },
     });
   });
 
@@ -90,6 +99,15 @@ describe("parseStudentRow", () => {
       attendanceStatus: "Very Sincere",
       assessmentAttendance: 5,
       codingGrade: "Proficient",
+      testScores: {
+        practiceTest1: 97.14,
+        practiceTest2: 97.14,
+        practiceTest3: 78.33,
+        practiceTest4: 86.43,
+        mockTest: 97.14,
+        onlineAssessment: 77.9,
+        written: 0,
+      },
     });
   });
 });
@@ -113,6 +131,15 @@ describe("loadStudents", () => {
         attendanceStatus: "Very Sincere",
         assessmentAttendance: 5,
         codingGrade: "Expert",
+        testScores: {
+          practiceTest1: 98.1,
+          practiceTest2: 96.67,
+          practiceTest3: 92.14,
+          practiceTest4: 86.43,
+          mockTest: 99.05,
+          onlineAssessment: 79.3,
+          written: 20,
+        },
       },
       {
         rollNumber: "2401331540043",
@@ -124,6 +151,15 @@ describe("loadStudents", () => {
         attendanceStatus: "Very Sincere",
         assessmentAttendance: 5,
         codingGrade: "Proficient",
+        testScores: {
+          practiceTest1: 97.14,
+          practiceTest2: 97.14,
+          practiceTest3: 78.33,
+          practiceTest4: 86.43,
+          mockTest: 97.14,
+          onlineAssessment: 77.9,
+          written: 0,
+        },
       },
     ]);
   });
@@ -145,6 +181,15 @@ describe("loadStudents", () => {
         attendanceStatus: "Very Sincere",
         assessmentAttendance: 5,
         codingGrade: "Expert",
+        testScores: {
+          practiceTest1: 98.1,
+          practiceTest2: 96.67,
+          practiceTest3: 92.14,
+          practiceTest4: 86.43,
+          mockTest: 99.05,
+          onlineAssessment: 79.3,
+          written: 20,
+        },
       },
     ]);
   });

@@ -1,17 +1,18 @@
+import { LeaderboardApp } from "./_components/leaderboard-app";
+import { rankStudents } from "./_lib/ranking";
 import { loadStudentsFromDisk } from "./_lib/students";
 
 export default async function Home() {
   const students = await loadStudentsFromDisk();
+  const ranked = rankStudents(students);
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-center py-32 px-16 bg-white dark:bg-black">
-        <h1 className="text-3xl font-semibold tracking-tight text-black dark:text-zinc-50">
+    <div className="flex flex-1 justify-center bg-background">
+      <main className="w-full max-w-6xl px-8 py-12">
+        <h1 className="mb-6 text-[28px] font-semibold tracking-[-0.6px] text-foreground">
           Leaderboard
         </h1>
-        <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
-          {students.length} Students loaded
-        </p>
+        <LeaderboardApp students={ranked} />
       </main>
     </div>
   );

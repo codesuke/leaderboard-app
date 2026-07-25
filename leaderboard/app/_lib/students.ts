@@ -39,6 +39,16 @@ export type AttendanceStatus = "Very Sincere" | "Sincere" | "Poor" | "Very Poor"
 
 export type CodingGrade = "Beginner" | "Novice" | "Learner" | "Proficient" | "Expert";
 
+export interface TestScores {
+  practiceTest1: number;
+  practiceTest2: number;
+  practiceTest3: number;
+  practiceTest4: number;
+  mockTest: number;
+  onlineAssessment: number;
+  written: number;
+}
+
 export interface Student {
   rollNumber: string;
   name: string;
@@ -49,6 +59,7 @@ export interface Student {
   attendanceStatus: AttendanceStatus;
   assessmentAttendance: number;
   codingGrade: CodingGrade;
+  testScores: TestScores;
 }
 
 export type RawCsvRow = Record<string, string>;
@@ -66,6 +77,15 @@ export function parseStudentRow(row: RawCsvRow): Student {
     attendanceStatus: row.Status as AttendanceStatus,
     assessmentAttendance: Number(row.Attendance_in_Assessment),
     codingGrade: row.Coding_Grade as CodingGrade,
+    testScores: {
+      practiceTest1: Number(row.P_Test_1),
+      practiceTest2: Number(row.P_Test_2),
+      practiceTest3: Number(row.P_Test_3),
+      practiceTest4: Number(row.P_Test_4),
+      mockTest: Number(row.M_Test_5),
+      onlineAssessment: Number(row.Online_Assessment_Grade_80),
+      written: Number(row.Written_Score_20),
+    },
   };
 }
 
