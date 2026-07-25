@@ -1,9 +1,13 @@
 "use client";
 
-import { RotateCcwIcon } from "lucide-react";
-import type { StudentFilters } from "@/app/_lib/filtering";
+import { XIcon } from "lucide-react";
+import {
+  describeActiveFilters,
+  removeFilterChip,
+  type StudentFilters,
+} from "@/app/_lib/filtering";
 import { BATCH_ORDER } from "@/app/_lib/ranking";
-import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,9 +40,39 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
     filters.scoreMin ?? 0,
     filters.scoreMax ?? 100,
   ];
+  const chips = describeActiveFilters(filters);
 
   return (
     <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-xl shadow-black/30 ring-1 ring-white/[0.03]">
+      {chips.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {chips.map((chip) => (
+            <Badge
+              key={chip.key}
+              variant="outline"
+              className="gap-1 rounded-full pr-1.5"
+            >
+              {chip.label}
+              <button
+                type="button"
+                aria-label={`Remove ${chip.label} filter`}
+                className="rounded-full p-0.5 hover:bg-muted"
+                onClick={() => onChange(removeFilterChip(filters, chip.key))}
+              >
+                <XIcon className="size-3" />
+              </button>
+            </Badge>
+          ))}
+          <button
+            type="button"
+            className="text-xs text-muted-foreground hover:text-foreground"
+            onClick={() => onChange({})}
+          >
+            Clear all
+          </button>
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center gap-2.5">
         <MultiSelectFilter
           label="Batch"
@@ -81,16 +115,6 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
             })
           }
         />
-
-        <Button
-          variant="ghost"
-          className="rounded-full text-muted-foreground hover:text-foreground"
-          onClick={() => onChange({})}
-          disabled={Object.keys(filters).length === 0}
-        >
-          <RotateCcwIcon data-icon="inline-start" />
-          Reset filters
-        </Button>
       </div>
 
       <Separator />
