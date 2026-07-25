@@ -30,7 +30,10 @@ import { XIcon } from "lucide-react";
 
 const CHART_COLORS = ["#5e6ad2", "#828fff", "#7a7fad", "#27a644", "#8a8f98"];
 
-const TEST_DIMENSIONS: { key: keyof RankedStudent["testScores"]; label: string }[] = [
+const TEST_DIMENSIONS: {
+  key: keyof RankedStudent["testScores"];
+  label: string;
+}[] = [
   { key: "practiceTest1", label: "Practice 1" },
   { key: "practiceTest2", label: "Practice 2" },
   { key: "practiceTest3", label: "Practice 3" },
@@ -70,7 +73,7 @@ export function ComparisonDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-h-[85vh] max-w-4xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Compare Students</DialogTitle>
         </DialogHeader>
@@ -98,7 +101,10 @@ export function ComparisonDialog({
               ))}
             </div>
 
-            <ChartContainer config={chartConfig} className="mx-auto h-72 w-full max-w-md">
+            <ChartContainer
+              config={chartConfig}
+              className="mx-auto h-72 w-full max-w-md"
+            >
               <RadarChart data={chartData}>
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <PolarGrid />
@@ -122,17 +128,43 @@ export function ComparisonDialog({
                   <TableRow>
                     <TableHead>Field</TableHead>
                     {students.map((student) => (
-                      <TableHead key={student.rollNumber}>{student.name}</TableHead>
+                      <TableHead key={student.rollNumber}>
+                        {student.name}
+                      </TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <ComparisonRow label="Roll Number" students={students} value={(s) => s.rollNumber} />
-                  <ComparisonRow label="Batch" students={students} value={(s) => s.batch} />
-                  <ComparisonRow label="Branch" students={students} value={(s) => s.branch} />
-                  <ComparisonRow label="Score" students={students} value={(s) => s.score} />
-                  <ComparisonRow label="Overall Rank" students={students} value={(s) => s.rankOverall} />
-                  <ComparisonRow label="Rank in Batch" students={students} value={(s) => s.rankInBatch} />
+                  <ComparisonRow
+                    label="Roll Number"
+                    students={students}
+                    value={(s) => s.rollNumber}
+                  />
+                  <ComparisonRow
+                    label="Batch"
+                    students={students}
+                    value={(s) => s.batch}
+                  />
+                  <ComparisonRow
+                    label="Branch"
+                    students={students}
+                    value={(s) => s.branch}
+                  />
+                  <ComparisonRow
+                    label="Score"
+                    students={students}
+                    value={(s) => s.score}
+                  />
+                  <ComparisonRow
+                    label="Overall Rank"
+                    students={students}
+                    value={(s) => s.rankOverall}
+                  />
+                  <ComparisonRow
+                    label="Rank in Batch"
+                    students={students}
+                    value={(s) => s.rankInBatch}
+                  />
                   <ComparisonRow
                     label="Attendance Status"
                     students={students}
@@ -143,7 +175,11 @@ export function ComparisonDialog({
                     students={students}
                     value={(s) => s.assessmentAttendance}
                   />
-                  <ComparisonRow label="Coding Grade" students={students} value={(s) => s.codingGrade} />
+                  <ComparisonRow
+                    label="Coding Grade"
+                    students={students}
+                    value={(s) => s.codingGrade}
+                  />
                   {TEST_DIMENSIONS.map(({ key, label }) => (
                     <ComparisonRow
                       key={key}
