@@ -29,6 +29,11 @@ A read-only Leaderboard page lists every Student ordered by Batch (S1 → S2 →
 17. As a coordinator, I want the comparison view to show every field on the Student's row (all test scores, Attendance Status, Assessment Attendance, Coding Grade — not just Score), so that I can see *why* one Student outscored another.
 18. As a coordinator, I want to be stopped (not silently overridden) if I try to select a 6th Student for comparison, so that I understand the 5-Student cap rather than being confused by a swap.
 19. As a coordinator, I want to remove a Student from an active comparison, so that I can adjust the group without starting over.
+20. As a coordinator, I want to click a table column header to sort the list by that column, so that I can inspect the data along dimensions other than the default Batch-then-Score order.
+21. As a coordinator, I want to filter by a Roll Number range, so that I can isolate a specific block of enrollment numbers.
+22. As a coordinator, I want to see summary KPIs (total Students, average Score, Provisional count, Batch count) at a glance, so that I don't have to derive them myself from the table.
+23. As a coordinator, I want a chart of how many Students landed in each Batch, so that I can see the cohort's shape without counting rows.
+24. As a coordinator, I want the comparison view to include a chart plotting selected Students across their score dimensions, so that differences are visible at a glance, not just readable in a table.
 
 ## Implementation Decisions
 
@@ -41,6 +46,9 @@ A read-only Leaderboard page lists every Student ordered by Batch (S1 → S2 →
 - **Rendering strategy**: the page is a Server Component that loads and ranks the full Student list server-side; filtering/search/comparison-selection are client-side interactions over that already-loaded, already-ranked list (no server round-trip per filter change).
 - **List size handling**: with 1,448 rows, the table is paginated (client-side, e.g. 50 Students per page) rather than rendered in full or virtualized — simplest option that keeps the DOM small; revisit if UX testing shows pagination is the wrong call for this use case.
 - **Comparison selection**: client-side selection state capped at 5 Students; attempting to add a 6th is rejected with a visible message rather than evicting an existing selection.
+- **Column sorting**: a pure comparator-selection function maps a column key + direction to a sort, independent of the default Batch-then-Score ranking (which still drives `rankInBatch`/`rankOverall` regardless of the active column sort — sorting the view doesn't recompute Rank).
+- **UI components**: shadcn/ui (installed into `leaderboard/`) supplies Table, Card, Badge, Select, Slider, and Dialog primitives; charts render via shadcn's Chart wrapper (Recharts). DESIGN.md's tokens (canvas/surface/ink/hairline/primary) are wired as CSS variables in `globals.css` and consumed as shadcn's semantic color slots rather than raw hex values in components.
+- **Stats/chart data**: pure functions compute overview KPIs and per-Batch counts from the already-loaded Student list — no separate data fetch.
 
 ## Testing Decisions
 
@@ -55,8 +63,7 @@ A read-only Leaderboard page lists every Student ordered by Batch (S1 → S2 →
 - The algorithm that sorts Students into Batches in the first place — the source data already does this; the Leaderboard only displays the result (settled in [docs/QnA/0002](../QnA/0002-leaderboard-scope-and-terminology.md)).
 - CSV upload UI, multiple cohorts/history, and any database — see [ADR 0002](../ADR/0002-static-csv-data-source.md). A new cohort means manually replacing the file and redeploying.
 - Authentication/access control on the Leaderboard page.
-- Chart/visual (bar-per-metric) comparison — noted as a v2 idea in the QnA session, not built here.
-- Component-level or end-to-end automated tests for the filter/search/comparison UI — only the underlying data-layer logic is tested in this PRD.
+- Component-level or end-to-end automated tests for the filter/search/comparison/sort/chart UI — only the underlying data-layer logic (filtering, sorting, stats, chart data) is tested in this PRD.
 - Editing or correcting Student data — the Leaderboard is read-only.
 
 ## Further Notes
