@@ -1,28 +1,45 @@
 # Leaderboard
 
-{One or two sentence description of what this context is and why it exists.}
+Tracks and ranks Students in a training program by Score, letting staff view, filter, and compare them across Batches and Branches.
 
 ## Language
 
-**{Term}**:
-{A one or two sentence description of the term}
-_Avoid_: {synonyms to avoid}
+**Student**:
+A person tracked in the Leaderboard, uniquely identified by their Roll Number.
+_Avoid_: User, Candidate
 
-<!--
-Fill this in with the `grill-with-docs` skill (which uses `domain-modeling`
-underneath) as fuzzy product language gets sharpened into precise terms.
+**Roll Number**:
+The university-issued identifier that uniquely identifies a Student.
+_Avoid_: ID, Student ID
 
-Rules:
-- Be opinionated. When multiple words exist for the same concept, pick the
-  best one and list the others under `_Avoid_`.
-- Keep definitions tight — one or two sentences, defining what a term IS,
-  not what it does.
-- Only include terms specific to this project's domain. General programming
-  concepts (timeouts, error types, utility patterns) don't belong here even
-  if the project uses them extensively.
-- This file is a glossary, not a spec. No implementation details.
+**Batch**:
+The cohort a Student is placed into based on Score, ranked from best to worst as S1, S2, then T1 through T12.
+_Avoid_: Training Group, Group
 
-If this project turns out to have multiple bounded contexts, replace this
-file with a root `CONTEXT-MAP.md` and move per-context glossaries under
-`src/<context>/CONTEXT.md` — see the `domain-modeling` skill for the format.
--->
+**Branch**:
+A Student's academic field of study (e.g. CS, CSE-AI, CSE-DS) — not an organizational department.
+_Avoid_: Department
+
+**Score**:
+The composite value (0-100) that determines a Student's Batch and Rank.
+_Avoid_: Marks, Final Score
+
+**Rank**:
+A Student's position when Students are ordered by Batch and then by Score, expressed both within their Batch and across the whole Leaderboard.
+_Avoid_: Position, Placement
+
+**Provisional**:
+A Student whose Batch placement is incomplete because their written test hasn't been scored yet. Shown within their parent Batch (not a separate Batch), flagged distinctly.
+_Avoid_: Temp, Temporary
+
+**Attendance Status**:
+A sincerity rating (Very Sincere, Sincere, Poor, Very Poor) assigned to a Student. Independent of Assessment Attendance — the two are unrelated data points despite both concerning attendance.
+_Avoid_: Status, Sincerity
+
+**Assessment Attendance**:
+A count (0-5) of how many scored assessments a Student attended. Distinct from Attendance Status.
+_Avoid_: Attendance (bare)
+
+**Coding Grade**:
+A ranked proficiency tier for a Student's coding ability: Beginner < Novice < Learner < Proficient < Expert.
+_Avoid_: Coding Level
