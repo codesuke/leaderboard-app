@@ -9,11 +9,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { MultiSelectFilter } from "./multi-select-filter";
 
-const ATTENDANCE_STATUS_OPTIONS = ["Very Sincere", "Sincere", "Poor", "Very Poor"] as const;
-const CODING_GRADE_OPTIONS = ["Beginner", "Novice", "Learner", "Proficient", "Expert"] as const;
+const ATTENDANCE_STATUS_OPTIONS = [
+  "Very Sincere",
+  "Sincere",
+  "Poor",
+  "Very Poor",
+] as const;
+const CODING_GRADE_OPTIONS = [
+  "Beginner",
+  "Novice",
+  "Learner",
+  "Proficient",
+  "Expert",
+] as const;
 
 interface FiltersBarProps {
   filters: StudentFilters;
@@ -22,7 +32,10 @@ interface FiltersBarProps {
 }
 
 export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
-  const scoreRange: [number, number] = [filters.scoreMin ?? 0, filters.scoreMax ?? 100];
+  const scoreRange: [number, number] = [
+    filters.scoreMin ?? 0,
+    filters.scoreMax ?? 100,
+  ];
 
   return (
     <div className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-xl shadow-black/30 ring-1 ring-white/[0.03]">
@@ -32,60 +45,42 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
           options={[...BATCH_ORDER]}
           selected={filters.batches ?? []}
           onChange={(batches) =>
-            onChange({ ...filters, batches: batches as StudentFilters["batches"] })
+            onChange({
+              ...filters,
+              batches: batches as StudentFilters["batches"],
+            })
           }
         />
         <MultiSelectFilter
           label="Branch"
           options={branches}
           selected={filters.branches ?? []}
-          onChange={(branchSelection) => onChange({ ...filters, branches: branchSelection })}
+          onChange={(branchSelection) =>
+            onChange({ ...filters, branches: branchSelection })
+          }
         />
-
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Attendance Status
-          </Label>
-          <ToggleGroup
-            multiple
-            variant="outline"
-            spacing={0}
-            value={filters.attendanceStatuses ?? []}
-            onValueChange={(value) =>
-              onChange({
-                ...filters,
-                attendanceStatuses: value as StudentFilters["attendanceStatuses"],
-              })
-            }
-          >
-            {ATTENDANCE_STATUS_OPTIONS.map((status) => (
-              <ToggleGroupItem key={status} value={status} className="px-3.5">
-                {status}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            Coding Grade
-          </Label>
-          <ToggleGroup
-            multiple
-            variant="outline"
-            spacing={0}
-            value={filters.codingGrades ?? []}
-            onValueChange={(value) =>
-              onChange({ ...filters, codingGrades: value as StudentFilters["codingGrades"] })
-            }
-          >
-            {CODING_GRADE_OPTIONS.map((grade) => (
-              <ToggleGroupItem key={grade} value={grade} className="px-3.5">
-                {grade}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
+        <MultiSelectFilter
+          label="Attendance Status"
+          options={[...ATTENDANCE_STATUS_OPTIONS]}
+          selected={filters.attendanceStatuses ?? []}
+          onChange={(value) =>
+            onChange({
+              ...filters,
+              attendanceStatuses: value as StudentFilters["attendanceStatuses"],
+            })
+          }
+        />
+        <MultiSelectFilter
+          label="Coding Grade"
+          options={[...CODING_GRADE_OPTIONS]}
+          selected={filters.codingGrades ?? []}
+          onChange={(value) =>
+            onChange({
+              ...filters,
+              codingGrades: value as StudentFilters["codingGrades"],
+            })
+          }
+        />
 
         <Button
           variant="ghost"
@@ -125,7 +120,10 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
             className="w-40 rounded-full"
             value={filters.rollNumberMin ?? ""}
             onChange={(event) =>
-              onChange({ ...filters, rollNumberMin: event.target.value || undefined })
+              onChange({
+                ...filters,
+                rollNumberMin: event.target.value || undefined,
+              })
             }
           />
         </div>
@@ -137,9 +135,15 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
             className="w-40 rounded-full"
             value={filters.rollNumberMax ?? ""}
             onChange={(event) =>
-              onChange({ ...filters, rollNumberMax: event.target.value || undefined })
+              onChange({
+                ...filters,
+                rollNumberMax: event.target.value || undefined,
+              })
             }
           />
+          <span className="text-xs text-muted-foreground">
+            Alphanumeric range, not numeric
+          </span>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -160,7 +164,10 @@ export function FiltersBar({ filters, onChange, branches }: FiltersBarProps) {
           <Checkbox
             checked={filters.provisionalOnly ?? false}
             onCheckedChange={(checked) =>
-              onChange({ ...filters, provisionalOnly: checked === true || undefined })
+              onChange({
+                ...filters,
+                provisionalOnly: checked === true || undefined,
+              })
             }
           />
           Provisional only
