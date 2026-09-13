@@ -55,6 +55,10 @@ const FULL_ROW: RawStudentRow = {
   Sep_Coding_17Aug: "120",
   Sep_Coding_18Aug: "115",
   Sep_Coding_3Sep: "118",
+  Sep_Remark_17Aug: "",
+  Sep_Remark_18Aug: "",
+  Sep_Ppe_Attendance: "60",
+  Sep_Offline_Problem1_Attempted: "Yes",
 };
 
 describe("parseStudentRow", () => {
@@ -81,6 +85,9 @@ describe("parseStudentRow", () => {
       oldBatch: "S1",
       oldProvisional: false,
       oldScore: 99.3,
+      assessmentFlags: [],
+      currentPpeAttendance: 60,
+      offlineProblem1Attempted: true,
       progress: {
         batchMovement: { from: "S1", to: "S1", tiersMoved: 0 },
         codingGradeMovement: { from: "Proficient", to: "Expert" },
@@ -92,6 +99,46 @@ describe("parseStudentRow", () => {
         rawScoreDelta: 210.8 - 99.3,
       },
     });
+  });
+
+  it("parses combined and single-remark assessment flags into a flat, de-duplicated list", () => {
+    const combined = parseStudentRow({
+      ...FULL_ROW,
+      Sep_Remark_17Aug: "Suspicious",
+      Sep_Remark_18Aug: "Suspicious+Mobile Phone",
+    });
+    expect(combined.assessmentFlags).toEqual(["Suspicious", "Mobile Phone"]);
+
+    const single = parseStudentRow({
+      ...FULL_ROW,
+      Sep_Remark_17Aug: "",
+      Sep_Remark_18Aug: "Mobile Phone",
+    });
+    expect(single.assessmentFlags).toEqual(["Mobile Phone"]);
+  });
+
+  it("has no assessment flags when both remark columns are blank", () => {
+    expect(parseStudentRow(FULL_ROW).assessmentFlags).toEqual([]);
+  });
+
+  it("parses offlineProblem1Attempted as null for Unknown or missing values", () => {
+    expect(
+      parseStudentRow({
+        ...FULL_ROW,
+        Sep_Offline_Problem1_Attempted: "Unknown",
+      }).offlineProblem1Attempted
+    ).toBeNull();
+    expect(
+      parseStudentRow({ ...FULL_ROW, Sep_Offline_Problem1_Attempted: "" })
+        .offlineProblem1Attempted
+    ).toBeNull();
+  });
+
+  it("parses offlineProblem1Attempted as false for a No/NO value", () => {
+    expect(
+      parseStudentRow({ ...FULL_ROW, Sep_Offline_Problem1_Attempted: "NO" })
+        .offlineProblem1Attempted
+    ).toBe(false);
   });
 
   it("marks a _Temp-suffixed September Batch as currently provisional", () => {
@@ -189,6 +236,9 @@ describe("parseStudentRow", () => {
       oldBatch: "S1",
       oldProvisional: false,
       oldScore: 99.3,
+      assessmentFlags: [],
+      currentPpeAttendance: null,
+      offlineProblem1Attempted: null,
       progress: null,
     });
   });
@@ -220,6 +270,9 @@ describe("parseStudentRow", () => {
       oldBatch: null,
       oldProvisional: null,
       oldScore: null,
+      assessmentFlags: [],
+      currentPpeAttendance: null,
+      offlineProblem1Attempted: null,
       progress: null,
     });
   });

@@ -1,11 +1,44 @@
-import type { StudentFilters } from "@/app/_lib/filtering";
+import type {
+  CodingGradeMovementDirection,
+  MovementDirection,
+  StudentFilters,
+} from "@/app/_lib/filtering";
 import { BATCH_ORDER } from "@/app/_lib/ranking";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { MultiSelectFilter } from "./multi-select-filter";
+
+const ANY_VALUE = "__any__";
+
+const MOVEMENT_DIRECTION_OPTIONS: {
+  value: MovementDirection;
+  label: string;
+}[] = [
+  { value: "up", label: "Moved Up" },
+  { value: "down", label: "Moved Down" },
+  { value: "stayed", label: "Stayed" },
+  { value: "oneSided", label: "One-Sided" },
+];
+
+const CODING_GRADE_MOVEMENT_OPTIONS: {
+  value: CodingGradeMovementDirection;
+  label: string;
+}[] = [
+  { value: "improved", label: "Improved" },
+  { value: "regressed", label: "Regressed" },
+  { value: "same", label: "Same" },
+];
 
 const ATTENDANCE_STATUS_OPTIONS = [
   "Very Sincere",
@@ -36,6 +69,10 @@ export function FilterControls({
     filters.scoreMin ?? 0,
     filters.scoreMax ?? 100,
   ];
+  const ppeAttendanceRange: [number, number] = [
+    filters.ppeAttendanceMin ?? 0,
+    filters.ppeAttendanceMax ?? 100,
+  ];
 
   return (
     <div className="flex flex-col gap-5">
@@ -48,6 +85,17 @@ export function FilterControls({
             onChange({
               ...filters,
               batches: batches as StudentFilters["batches"],
+            })
+          }
+        />
+        <MultiSelectFilter
+          label="Old Batch"
+          options={[...BATCH_ORDER]}
+          selected={filters.oldBatches ?? []}
+          onChange={(oldBatches) =>
+            onChange({
+              ...filters,
+              oldBatches: oldBatches as StudentFilters["oldBatches"],
             })
           }
         />
@@ -81,6 +129,83 @@ export function FilterControls({
             })
           }
         />
+        <Select
+          value={filters.movementDirection ?? ANY_VALUE}
+          onValueChange={(value) =>
+            onChange({
+              ...filters,
+              movementDirection:
+                value === ANY_VALUE
+                  ? undefined
+                  : (value as StudentFilters["movementDirection"]),
+            })
+          }
+        >
+          <SelectTrigger className="w-44 rounded-full" aria-label="Movement">
+            <SelectValue placeholder="Movement" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ANY_VALUE}>Any Movement</SelectItem>
+            {MOVEMENT_DIRECTION_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={filters.codingGradeMovement ?? ANY_VALUE}
+          onValueChange={(value) =>
+            onChange({
+              ...filters,
+              codingGradeMovement:
+                value === ANY_VALUE
+                  ? undefined
+                  : (value as StudentFilters["codingGradeMovement"]),
+            })
+          }
+        >
+          <SelectTrigger
+            className="w-52 rounded-full"
+            aria-label="Coding Grade Movement"
+          >
+            <SelectValue placeholder="Coding Grade Movement" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ANY_VALUE}>Any Coding Grade Movement</SelectItem>
+            {CODING_GRADE_MOVEMENT_OPTIONS.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          value={
+            filters.offlineAttempted === undefined
+              ? ANY_VALUE
+              : String(filters.offlineAttempted)
+          }
+          onValueChange={(value) =>
+            onChange({
+              ...filters,
+              offlineAttempted:
+                value === ANY_VALUE ? undefined : value === "true",
+            })
+          }
+        >
+          <SelectTrigger
+            className="w-52 rounded-full"
+            aria-label="Offline Round"
+          >
+            <SelectValue placeholder="Offline Round" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ANY_VALUE}>Any Offline Round Status</SelectItem>
+            <SelectItem value="true">Attempted</SelectItem>
+            <SelectItem value="false">Not Attempted</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <Separator />
@@ -100,6 +225,85 @@ export function FilterControls({
               onChange({ ...filters, scoreMin, scoreMax });
             }}
           />
+        </div>
+
+        <div className="flex w-64 flex-col gap-2.5">
+          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            PPE Attendance: {ppeAttendanceRange[0]} - {ppeAttendanceRange[1]}
+          </Label>
+          <Slider
+            value={ppeAttendanceRange}
+            min={0}
+            max={100}
+            step={1}
+            onValueChange={(value) => {
+              const [ppeAttendanceMin, ppeAttendanceMax] = value as number[];
+              onChange({ ...filters, ppeAttendanceMin, ppeAttendanceMax });
+            }}
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            Batch Tier range
+          </Label>
+          <div className="flex items-center gap-2">
+            <Select
+              value={filters.batchTierMin ?? ANY_VALUE}
+              onValueChange={(value) =>
+                onChange({
+                  ...filters,
+                  batchTierMin:
+                    value === ANY_VALUE
+                      ? undefined
+                      : (value as StudentFilters["batchTierMin"]),
+                })
+              }
+            >
+              <SelectTrigger
+                className="w-24 rounded-full"
+                aria-label="Batch Tier from"
+              >
+                <SelectValue placeholder="From" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ANY_VALUE}>Any</SelectItem>
+                {BATCH_ORDER.map((batch) => (
+                  <SelectItem key={batch} value={batch}>
+                    {batch}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span className="text-muted-foreground">–</span>
+            <Select
+              value={filters.batchTierMax ?? ANY_VALUE}
+              onValueChange={(value) =>
+                onChange({
+                  ...filters,
+                  batchTierMax:
+                    value === ANY_VALUE
+                      ? undefined
+                      : (value as StudentFilters["batchTierMax"]),
+                })
+              }
+            >
+              <SelectTrigger
+                className="w-24 rounded-full"
+                aria-label="Batch Tier to"
+              >
+                <SelectValue placeholder="To" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ANY_VALUE}>Any</SelectItem>
+                {BATCH_ORDER.map((batch) => (
+                  <SelectItem key={batch} value={batch}>
+                    {batch}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -164,6 +368,33 @@ export function FilterControls({
           />
           Provisional only
         </Label>
+
+        <Label className="flex items-center gap-2 text-sm">
+          <Checkbox
+            checked={filters.flaggedOnly ?? false}
+            onCheckedChange={(checked) =>
+              onChange({
+                ...filters,
+                flaggedOnly: checked === true || undefined,
+              })
+            }
+          />
+          Flagged only
+        </Label>
+
+        <Button
+          type="button"
+          variant={filters.flaggedPreset ? "default" : "outline"}
+          className="rounded-full px-4"
+          onClick={() =>
+            onChange({
+              ...filters,
+              flaggedPreset: filters.flaggedPreset ? undefined : true,
+            })
+          }
+        >
+          Flagged Students
+        </Button>
       </div>
     </div>
   );

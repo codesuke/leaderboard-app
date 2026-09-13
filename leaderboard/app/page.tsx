@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { LeaderboardApp } from "./_components/leaderboard-app";
 import { rankStudents } from "./_lib/ranking";
 import { loadStudentsFromDisk } from "./_lib/students";
@@ -12,7 +13,9 @@ export default async function Home() {
         <h1 className="mb-6 text-[28px] font-semibold tracking-[-0.6px] text-foreground">
           Leaderboard
         </h1>
-        <LeaderboardApp students={ranked} />
+        <Suspense>
+          <LeaderboardApp students={ranked} />
+        </Suspense>
       </main>
     </div>
   );

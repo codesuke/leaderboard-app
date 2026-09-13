@@ -42,10 +42,22 @@ const HEADERS = [
   "Coding_17Aug",
   "Coding_18Aug",
   "Coding_3Sep",
+  "Remark_17Aug",
+  "Remark_18Aug",
+  "Ppe_Attendance",
+  "Offline_Problem1_Attempted",
 ];
 
 function csvField(value) {
   return value === null || value === undefined ? "" : String(value);
+}
+
+// The offline_vscode result packs its fields into one free-text remark like
+// "Attempted problem 1: Yes; Problems solved: 2; Coding Score (AQ): 83" —
+// extract just the Yes/No/Unknown answer this CSV needs.
+function extractProblem1Attempted(remark) {
+  const match = remark?.match(/Attempted problem 1:\s*([A-Za-z]+)/);
+  return match ? match[1] : "";
 }
 
 const rows = [];
@@ -56,6 +68,7 @@ for (const rollNumber of septemberBatchByRoll.keys()) {
   const [coding17Aug, coding18Aug, coding3Sep] = CODING_ASSESSMENT_IDS.map(
     (id) => results.get(id)?.score ?? null
   );
+  const ppeAttendance = results.get("ppe_attendance_aug")?.score ?? null;
 
   rows.push(
     [
@@ -68,6 +81,10 @@ for (const rollNumber of septemberBatchByRoll.keys()) {
       coding17Aug,
       coding18Aug,
       coding3Sep,
+      results.get("coding_17aug")?.remark ?? "",
+      results.get("coding_18aug")?.remark ?? "",
+      ppeAttendance,
+      extractProblem1Attempted(results.get("offline_vscode")?.remark),
     ]
       .map(csvField)
       .join(",")

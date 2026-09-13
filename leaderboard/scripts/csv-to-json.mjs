@@ -74,6 +74,10 @@ const rows = [...rollNumbers].map((rollNumber) => {
     row.Sep_Coding_17Aug = september.Coding_17Aug;
     row.Sep_Coding_18Aug = september.Coding_18Aug;
     row.Sep_Coding_3Sep = september.Coding_3Sep;
+    row.Sep_Remark_17Aug = september.Remark_17Aug;
+    row.Sep_Remark_18Aug = september.Remark_18Aug;
+    row.Sep_Ppe_Attendance = september.Ppe_Attendance;
+    row.Sep_Offline_Problem1_Attempted = september.Offline_Problem1_Attempted;
   }
 
   return row;

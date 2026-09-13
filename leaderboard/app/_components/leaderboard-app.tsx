@@ -1,12 +1,25 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { studentsToCsv } from "@/app/_lib/csv";
+import {
+  decodeFiltersFromSearchParams,
+  encodeFiltersToSearchParams,
+} from "@/app/_lib/filter-url";
 import { filterStudents, type StudentFilters } from "@/app/_lib/filtering";
 import { paginate } from "@/app/_lib/pagination";
 import type { RankedStudent } from "@/app/_lib/ranking";
-import { sortByColumn, type SortableColumn, type SortDirection } from "@/app/_lib/sorting";
-import { computeBatchDistribution, computeOverviewStats } from "@/app/_lib/stats";
+import {
+  sortByColumn,
+  type SortableColumn,
+  type SortDirection,
+} from "@/app/_lib/sorting";
+import {
+  computeBatchDistribution,
+  computeOverviewStats,
+} from "@/app/_lib/stats";
 import { Button } from "@/components/ui/button";
 import { ComparisonDialog } from "./comparison-dialog";
 import { FiltersBar } from "./filters-bar";
@@ -21,7 +34,11 @@ interface LeaderboardAppProps {
 }
 
 export function LeaderboardApp({ students }: LeaderboardAppProps) {
-  const [filters, setFilters] = useState<StudentFilters>({});
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [filters, setFilters] = useState<StudentFilters>(() =>
+    decodeFiltersFromSearchParams(searchParams)
+  );
   const [sortColumn, setSortColumn] = useState<SortableColumn | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [page, setPage] = useState(1);
@@ -33,14 +50,21 @@ export function LeaderboardApp({ students }: LeaderboardAppProps) {
     [students]
   );
 
-  const filtered = useMemo(() => filterStudents(students, filters), [students, filters]);
+  const filtered = useMemo(
+    () => filterStudents(students, filters),
+    [students, filters]
+  );
   const displayed = useMemo(
-    () => (sortColumn ? sortByColumn(filtered, sortColumn, sortDirection) : filtered),
+    () =>
+      sortColumn ? sortByColumn(filtered, sortColumn, sortDirection) : filtered,
     [filtered, sortColumn, sortDirection]
   );
 
   const stats = useMemo(() => computeOverviewStats(filtered), [filtered]);
-  const batchDistribution = useMemo(() => computeBatchDistribution(filtered), [filtered]);
+  const batchDistribution = useMemo(
+    () => computeBatchDistribution(filtered),
+    [filtered]
+  );
 
   const totalPages = Math.max(1, Math.ceil(displayed.length / PAGE_SIZE));
   const pageItems = paginate(displayed, page, PAGE_SIZE);
@@ -53,6 +77,19 @@ export function LeaderboardApp({ students }: LeaderboardAppProps) {
   function updateFilters(next: StudentFilters) {
     setFilters(next);
     setPage(1);
+    const query = encodeFiltersToSearchParams(next).toString();
+    router.replace(query ? `?${query}` : "?", { scroll: false });
+  }
+
+  function exportCsv() {
+    const csv = studentsToCsv(displayed);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "students.csv";
+    anchor.click();
+    URL.revokeObjectURL(url);
   }
 
   function handleSort(column: SortableColumn) {
@@ -71,7 +108,9 @@ export function LeaderboardApp({ students }: LeaderboardAppProps) {
         return current.filter((roll) => roll !== rollNumber);
       }
       if (current.length >= MAX_COMPARISON) {
-        toast.error(`You can compare up to ${MAX_COMPARISON} Students at once.`);
+        toast.error(
+          `You can compare up to ${MAX_COMPARISON} Students at once.`
+        );
         return current;
       }
       return [...current, rollNumber];
@@ -81,19 +120,33 @@ export function LeaderboardApp({ students }: LeaderboardAppProps) {
   return (
     <div className="flex flex-col gap-6">
       <StatsOverview stats={stats} batchDistribution={batchDistribution} />
-      <FiltersBar filters={filters} onChange={updateFilters} branches={branches} />
+      <FiltersBar
+        filters={filters}
+        onChange={updateFilters}
+        branches={branches}
+      />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">
           {displayed.length.toLocaleString()} Students
         </p>
-        <Button
-          className="rounded-full px-5 shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/30"
-          disabled={selected.length === 0}
-          onClick={() => setComparisonOpen(true)}
-        >
-          Compare ({selected.length})
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            className="rounded-full px-4"
+            disabled={displayed.length === 0}
+            onClick={exportCsv}
+          >
+            Export CSV
+          </Button>
+          <Button
+            className="rounded-full px-5 shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/30"
+            disabled={selected.length === 0}
+            onClick={() => setComparisonOpen(true)}
+          >
+            Compare ({selected.length})
+          </Button>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-xl shadow-black/30 ring-1 ring-white/[0.03]">
@@ -134,7 +187,9 @@ export function LeaderboardApp({ students }: LeaderboardAppProps) {
         open={comparisonOpen}
         onOpenChange={setComparisonOpen}
         onRemove={(rollNumber) =>
-          setSelected((current) => current.filter((roll) => roll !== rollNumber))
+          setSelected((current) =>
+            current.filter((roll) => roll !== rollNumber)
+          )
         }
       />
     </div>

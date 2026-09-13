@@ -21,6 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { StudentSparkline } from "./student-sparkline";
 
 interface Column {
   key: SortableColumn;
@@ -82,6 +83,9 @@ export function StudentTable({
               </TableHead>
             </Fragment>
           ))}
+          <TableHead className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            Trend
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -124,6 +128,11 @@ export function StudentTable({
               {student.branch}
             </TableCell>
             <TableCell>{student.score ?? "—"}</TableCell>
+            <TableCell>
+              <StudentSparkline
+                trend={student.progress?.codingScoreTrend ?? []}
+              />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

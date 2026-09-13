@@ -4,6 +4,7 @@ import {
   computeMovementMatrix,
   computeNetMovementSummary,
   filterByBranch,
+  getStudentsForMove,
 } from "./batch-movement";
 import { BATCH_ORDER } from "./ranking";
 import type { Batch, CodingGrade, Student, StudentProgress } from "./students";
@@ -47,6 +48,9 @@ function buildStudent(overrides: Partial<Student>): Student {
     oldBatch: "T1",
     oldProvisional: false,
     oldScore: 50,
+    assessmentFlags: [],
+    currentPpeAttendance: null,
+    offlineProblem1Attempted: null,
     progress: buildProgress(),
     ...overrides,
   };
@@ -244,6 +248,34 @@ describe("computeNetMovementSummary", () => {
       stayed: 0,
       oneSided: 1,
     });
+  });
+});
+
+describe("getStudentsForMove", () => {
+  it("returns the Students who made a real move from one Batch to another", () => {
+    const students = [
+      movedStudent("1", "T3", "S1"),
+      movedStudent("2", "T3", "S1"),
+      movedStudent("3", "T3", "S2"),
+    ];
+
+    expect(getStudentsForMove(students, "T3", "S1")).toEqual([
+      students[0],
+      students[1],
+    ]);
+  });
+
+  it("returns the Students who stayed, for a diagonal cell", () => {
+    const stayed = movedStudent("1", "T3", "T3");
+    const moved = movedStudent("2", "T3", "S1");
+
+    expect(getStudentsForMove([stayed, moved], "T3", "T3")).toEqual([stayed]);
+  });
+
+  it("returns an empty list for a move nobody made", () => {
+    const students = [movedStudent("1", "T3", "S1")];
+
+    expect(getStudentsForMove(students, "S2", "T5")).toEqual([]);
   });
 });
 

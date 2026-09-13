@@ -6,12 +6,20 @@ import {
   computeMovementMatrix,
   computeNetMovementSummary,
   filterByBranch,
+  getStudentsForMove,
   type BatchSizeComparison,
   type MovementMatrix,
   type NetMovementSummary,
 } from "@/app/_lib/batch-movement";
+import type { Batch } from "@/app/_lib/students";
 import type { RankedStudent } from "@/app/_lib/ranking";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -35,8 +43,14 @@ interface BatchMovementAppProps {
   students: RankedStudent[];
 }
 
+interface SelectedMove {
+  from: Batch;
+  to: Batch;
+}
+
 export function BatchMovementApp({ students }: BatchMovementAppProps) {
   const [branch, setBranch] = useState<string | null>(null);
+  const [selectedMove, setSelectedMove] = useState<SelectedMove | null>(null);
 
   const branches = useMemo(
     () => Array.from(new Set(students.map((student) => student.branch))).sort(),
@@ -79,8 +93,63 @@ export function BatchMovementApp({ students }: BatchMovementAppProps) {
       </div>
 
       <BatchSizeCards comparison={sizeComparison} />
-      <MovementMatrixTable matrix={matrix} />
+      <MovementMatrixTable matrix={matrix} onSelectMove={setSelectedMove} />
       <NetMovementSummaryCards summary={summary} />
+
+      <Dialog
+        open={selectedMove !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedMove(null);
+        }}
+      >
+        <DialogContent className="max-h-[85vh] w-[95vw] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedMove && `${selectedMove.from} → ${selectedMove.to}`}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedMove && (
+            <MoveDrillDownTable
+              students={getStudentsForMove(
+                scoped,
+                selectedMove.from,
+                selectedMove.to
+              )}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+function MoveDrillDownTable({ students }: { students: RankedStudent[] }) {
+  return (
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Roll Number</TableHead>
+            <TableHead>Branch</TableHead>
+            <TableHead>Score</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {students.map((student) => (
+            <TableRow key={student.rollNumber}>
+              <TableCell>{student.name}</TableCell>
+              <TableCell className="text-muted-foreground">
+                {student.rollNumber}
+              </TableCell>
+              <TableCell className="text-muted-foreground">
+                {student.branch}
+              </TableCell>
+              <TableCell>{student.score ?? "—"}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }
@@ -153,7 +222,13 @@ function BatchSizeCards({ comparison }: { comparison: BatchSizeComparison[] }) {
   );
 }
 
-function MovementMatrixTable({ matrix }: { matrix: MovementMatrix }) {
+function MovementMatrixTable({
+  matrix,
+  onSelectMove,
+}: {
+  matrix: MovementMatrix;
+  onSelectMove: (move: SelectedMove) => void;
+}) {
   const countByPair = new Map(
     matrix.entries.map((entry) => [`${entry.from} ${entry.to}`, entry.count])
   );
@@ -186,16 +261,35 @@ function MovementMatrixTable({ matrix }: { matrix: MovementMatrix }) {
                 const count = countByPair.get(`${fromBatch} ${toBatch}`) ?? 0;
                 const isDiagonal = fromBatch === toBatch;
 
+                if (count === 0) {
+                  return (
+                    <TableCell
+                      key={toBatch}
+                      className={cn(
+                        "text-center",
+                        !isDiagonal && "text-muted-foreground/30"
+                      )}
+                    >
+                      —
+                    </TableCell>
+                  );
+                }
+
                 return (
-                  <TableCell
-                    key={toBatch}
-                    className={cn(
-                      "text-center",
-                      isDiagonal && "bg-primary/10 font-semibold text-primary",
-                      count === 0 && !isDiagonal && "text-muted-foreground/30"
-                    )}
-                  >
-                    {count === 0 ? "—" : count}
+                  <TableCell key={toBatch} className="p-0 text-center">
+                    <button
+                      type="button"
+                      className={cn(
+                        "size-full px-4 py-2 hover:bg-primary/20",
+                        isDiagonal && "bg-primary/10 font-semibold text-primary"
+                      )}
+                      onClick={() =>
+                        onSelectMove({ from: fromBatch, to: toBatch })
+                      }
+                      aria-label={`View Students who moved from ${fromBatch} to ${toBatch}`}
+                    >
+                      {count}
+                    </button>
                   </TableCell>
                 );
               })}

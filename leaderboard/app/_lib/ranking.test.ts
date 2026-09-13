@@ -25,6 +25,9 @@ function buildStudent(overrides: Partial<Student>): Student {
     oldBatch: null,
     oldProvisional: null,
     oldScore: null,
+    assessmentFlags: [],
+    currentPpeAttendance: null,
+    offlineProblem1Attempted: null,
     progress: null,
     ...overrides,
   };

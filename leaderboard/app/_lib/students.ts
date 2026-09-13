@@ -101,6 +101,12 @@ export interface Student {
   oldScore: number | null;
   /** Improvement stats computed from both snapshots. Null unless the Student has both July- and September-side data. */
   progress: StudentProgress | null;
+  /** Flags parsed from the coding assessment Remark columns (e.g. "Suspicious", "Mobile Phone"). Empty if the Student has no September-side data or no remarks. */
+  assessmentFlags: string[];
+  /** September PPE Attendance %, a different metric from `assessmentAttendance`. Null if the Student has no September-side data. */
+  currentPpeAttendance: number | null;
+  /** Whether the Student attempted Problem 1 of the offline VS Code round. Null if the Student has no September-side data, or the source marks it Unknown. */
+  offlineProblem1Attempted: boolean | null;
 }
 
 const CODING_ASSESSMENT_DATES = ["2026-08-17", "2026-08-18", "2026-09-03"];
@@ -111,6 +117,27 @@ function parseNullableNumber(raw: string | undefined): number | null {
   if (raw === undefined || raw === "") return null;
   const value = Number(raw);
   return Number.isNaN(value) ? null : value;
+}
+
+// A remark like "Suspicious+Mobile Phone" combines flags with "+"; each
+// coding assessment contributes its own remark, so flags across both are
+// flattened and de-duplicated into one flat list per Student.
+function parseAssessmentFlags(...remarks: (string | undefined)[]): string[] {
+  const flags = remarks
+    .filter((remark): remark is string => Boolean(remark))
+    .flatMap((remark) => remark.split("+").map((flag) => flag.trim()))
+    .filter((flag) => flag.length > 0);
+  return [...new Set(flags)];
+}
+
+// The source marks this "Yes" / "No" / "NO" / "Unknown"; only a definite
+// Yes/No answer is meaningful, so anything else (including missing data)
+// is treated as unknown.
+function parseAttempted(raw: string | undefined): boolean | null {
+  const normalized = raw?.trim().toLowerCase();
+  if (normalized === "yes") return true;
+  if (normalized === "no") return false;
+  return null;
 }
 
 export function parseStudentRow(row: RawStudentRow): Student {
@@ -154,6 +181,15 @@ export function parseStudentRow(row: RawStudentRow): Student {
     oldBatch,
     oldProvisional,
     oldScore,
+    assessmentFlags: hasSeptember
+      ? parseAssessmentFlags(row.Sep_Remark_17Aug, row.Sep_Remark_18Aug)
+      : [],
+    currentPpeAttendance: hasSeptember
+      ? parseNullableNumber(row.Sep_Ppe_Attendance)
+      : null,
+    offlineProblem1Attempted: hasSeptember
+      ? parseAttempted(row.Sep_Offline_Problem1_Attempted)
+      : null,
     progress:
       hasJuly && hasSeptember
         ? computeProgress({
