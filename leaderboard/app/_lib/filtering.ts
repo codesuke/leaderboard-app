@@ -18,10 +18,11 @@ function matchesSet<T>(value: T, set: T[] | undefined): boolean {
 }
 
 function matchesRange(
-  value: number,
+  value: number | null,
   min: number | undefined,
   max: number | undefined
 ): boolean {
+  if (value === null) return min === undefined && max === undefined;
   return (
     (min === undefined || value >= min) && (max === undefined || value <= max)
   );

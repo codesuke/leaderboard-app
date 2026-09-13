@@ -1,6 +1,13 @@
 "use client";
 
-import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon } from "lucide-react";
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ChevronsUpDownIcon,
+  TrendingDownIcon,
+  TrendingUpIcon,
+} from "lucide-react";
+import { Fragment } from "react";
 import type { RankedStudent } from "@/app/_lib/ranking";
 import type { SortableColumn, SortDirection } from "@/app/_lib/sorting";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +32,7 @@ const COLUMNS: Column[] = [
   { key: "rankInBatch", label: "Rank in Batch" },
   { key: "name", label: "Name" },
   { key: "rollNumber", label: "Roll Number" },
-  { key: "batch", label: "Batch" },
+  { key: "batch", label: "Current Batch" },
   { key: "branch", label: "Branch" },
   { key: "score", label: "Score" },
 ];
@@ -53,17 +60,27 @@ export function StudentTable({
         <TableRow>
           <TableHead className="w-8" />
           {COLUMNS.map((column) => (
-            <TableHead key={column.key}>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="-ml-2 h-7 gap-1 px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase"
-                onClick={() => onSort(column.key)}
-              >
-                {column.label}
-                <SortIcon active={sortColumn === column.key} direction={sortDirection} />
-              </Button>
-            </TableHead>
+            <Fragment key={column.key}>
+              {column.key === "batch" && (
+                <TableHead className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+                  Old Batch
+                </TableHead>
+              )}
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="-ml-2 h-7 gap-1 px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase"
+                  onClick={() => onSort(column.key)}
+                >
+                  {column.label}
+                  <SortIcon
+                    active={sortColumn === column.key}
+                    direction={sortDirection}
+                  />
+                </Button>
+              </TableHead>
+            </Fragment>
           ))}
         </TableRow>
       </TableHeader>
@@ -77,18 +94,36 @@ export function StudentTable({
                 aria-label={`Select ${student.name} for comparison`}
               />
             </TableCell>
-            <TableCell className="text-muted-foreground">{student.rankOverall}</TableCell>
-            <TableCell className="text-muted-foreground">{student.rankInBatch}</TableCell>
+            <TableCell className="text-muted-foreground">
+              {student.rankOverall}
+            </TableCell>
+            <TableCell className="text-muted-foreground">
+              {student.rankInBatch}
+            </TableCell>
             <TableCell>
               <span className="flex items-center gap-2">
                 {student.name}
-                {student.provisional && <Badge variant="secondary">Provisional</Badge>}
+                {student.provisional && (
+                  <Badge variant="secondary">Provisional</Badge>
+                )}
               </span>
             </TableCell>
-            <TableCell className="text-muted-foreground">{student.rollNumber}</TableCell>
-            <TableCell>{student.batch}</TableCell>
-            <TableCell className="text-muted-foreground">{student.branch}</TableCell>
-            <TableCell>{student.score}</TableCell>
+            <TableCell className="text-muted-foreground">
+              {student.rollNumber}
+            </TableCell>
+            <TableCell className="text-muted-foreground">
+              {student.oldBatch ?? "—"}
+            </TableCell>
+            <TableCell>
+              <span className="flex items-center gap-1.5">
+                {student.batch ?? "—"}
+                <BatchMovementIndicator student={student} />
+              </span>
+            </TableCell>
+            <TableCell className="text-muted-foreground">
+              {student.branch}
+            </TableCell>
+            <TableCell>{student.score ?? "—"}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -96,7 +131,30 @@ export function StudentTable({
   );
 }
 
-function SortIcon({ active, direction }: { active: boolean; direction: SortDirection }) {
+function BatchMovementIndicator({ student }: { student: RankedStudent }) {
+  const tiersMoved = student.progress?.batchMovement.tiersMoved;
+  if (!tiersMoved) return null;
+
+  return tiersMoved > 0 ? (
+    <TrendingUpIcon
+      className="size-3.5 text-emerald-400"
+      aria-label={`Moved up ${tiersMoved} Batch tier${tiersMoved === 1 ? "" : "s"} since July`}
+    />
+  ) : (
+    <TrendingDownIcon
+      className="size-3.5 text-red-400"
+      aria-label={`Moved down ${Math.abs(tiersMoved)} Batch tier${Math.abs(tiersMoved) === 1 ? "" : "s"} since July`}
+    />
+  );
+}
+
+function SortIcon({
+  active,
+  direction,
+}: {
+  active: boolean;
+  direction: SortDirection;
+}) {
   if (!active) return <ChevronsUpDownIcon className="size-3.5 opacity-50" />;
   return direction === "asc" ? (
     <ArrowUpIcon className="size-3.5" />

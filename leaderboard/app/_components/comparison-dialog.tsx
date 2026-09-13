@@ -1,6 +1,16 @@
 "use client";
 
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from "recharts";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  PolarAngleAxis,
+  PolarGrid,
+  Radar,
+  RadarChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 import type { RankedStudent } from "@/app/_lib/ranking";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,8 +40,10 @@ import { XIcon } from "lucide-react";
 
 const CHART_COLORS = ["#5e6ad2", "#828fff", "#7a7fad", "#27a644", "#8a8f98"];
 
+const NOT_AVAILABLE = "Not available";
+
 const TEST_DIMENSIONS: {
-  key: keyof RankedStudent["testScores"];
+  key: keyof NonNullable<RankedStudent["testScores"]>;
   label: string;
 }[] = [
   { key: "practiceTest1", label: "Practice 1" },
@@ -42,6 +54,8 @@ const TEST_DIMENSIONS: {
   { key: "onlineAssessment", label: "Online Assessment" },
   { key: "written", label: "Written" },
 ];
+
+const CODING_TREND_LABELS = ["17 Aug", "18 Aug", "3 Sep"];
 
 interface ComparisonDialogProps {
   students: RankedStudent[];
@@ -57,9 +71,18 @@ export function ComparisonDialog({
   onRemove,
 }: ComparisonDialogProps) {
   const chartData = TEST_DIMENSIONS.map(({ key, label }) => {
-    const row: Record<string, string | number> = { metric: label };
+    const row: Record<string, string | number | null> = { metric: label };
     students.forEach((student) => {
-      row[student.name] = student.testScores[key];
+      row[student.name] = student.testScores?.[key] ?? null;
+    });
+    return row;
+  });
+
+  const codingTrendData = CODING_TREND_LABELS.map((label, index) => {
+    const row: Record<string, string | number | null> = { date: label };
+    students.forEach((student) => {
+      row[student.name] =
+        student.progress?.codingScoreTrend[index]?.score ?? null;
     });
     return row;
   });
@@ -122,6 +145,33 @@ export function ComparisonDialog({
               </RadarChart>
             </ChartContainer>
 
+            <div className="flex flex-col gap-2">
+              <h3 className="text-sm font-medium text-foreground">
+                Coding Score Trend (17 Aug / 18 Aug / 3 Sep)
+              </h3>
+              <ChartContainer
+                config={chartConfig}
+                className="mx-auto h-56 w-full max-w-xl"
+              >
+                <LineChart data={codingTrendData}>
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey="date" tickLine={false} axisLine={false} />
+                  <YAxis tickLine={false} axisLine={false} width={30} />
+                  {students.map((student, index) => (
+                    <Line
+                      key={student.rollNumber}
+                      dataKey={student.name}
+                      stroke={CHART_COLORS[index % CHART_COLORS.length]}
+                      connectNulls={false}
+                      dot
+                    />
+                  ))}
+                  <ChartLegend content={<ChartLegendContent />} />
+                </LineChart>
+              </ChartContainer>
+            </div>
+
             <div className="overflow-x-auto rounded-lg border border-border">
               <Table>
                 <TableHeader>
@@ -141,9 +191,23 @@ export function ComparisonDialog({
                     value={(s) => s.rollNumber}
                   />
                   <ComparisonRow
-                    label="Batch"
+                    label="Old Batch"
+                    students={students}
+                    value={(s) => s.oldBatch}
+                  />
+                  <ComparisonRow
+                    label="Current Batch"
                     students={students}
                     value={(s) => s.batch}
+                  />
+                  <ComparisonRow
+                    label="Batch Movement"
+                    students={students}
+                    value={(s) =>
+                      s.progress
+                        ? `${s.progress.batchMovement.from} → ${s.progress.batchMovement.to} (${formatTiersMoved(s.progress.batchMovement.tiersMoved)})`
+                        : null
+                    }
                   />
                   <ComparisonRow
                     label="Branch"
@@ -154,6 +218,14 @@ export function ComparisonDialog({
                     label="Score"
                     students={students}
                     value={(s) => s.score}
+                  />
+                  <ComparisonRow
+                    label="Raw Score Delta"
+                    caption="Old Score and Score are on different scales — this delta is not a like-for-like improvement percentage."
+                    students={students}
+                    value={(s) =>
+                      s.progress ? formatSigned(s.progress.rawScoreDelta) : null
+                    }
                   />
                   <ComparisonRow
                     label="Overall Rank"
@@ -180,12 +252,21 @@ export function ComparisonDialog({
                     students={students}
                     value={(s) => s.codingGrade}
                   />
+                  <ComparisonRow
+                    label="Coding Grade Movement"
+                    students={students}
+                    value={(s) =>
+                      s.progress
+                        ? `${s.progress.codingGradeMovement.from} → ${s.progress.codingGradeMovement.to}`
+                        : null
+                    }
+                  />
                   {TEST_DIMENSIONS.map(({ key, label }) => (
                     <ComparisonRow
                       key={key}
                       label={label}
                       students={students}
-                      value={(s) => s.testScores[key]}
+                      value={(s) => s.testScores?.[key] ?? null}
                     />
                   ))}
                 </TableBody>
@@ -198,21 +279,51 @@ export function ComparisonDialog({
   );
 }
 
+function formatTiersMoved(tiersMoved: number): string {
+  if (tiersMoved === 0) return "no change";
+  return tiersMoved > 0 ? `up ${tiersMoved}` : `down ${Math.abs(tiersMoved)}`;
+}
+
+function formatSigned(value: number): string {
+  const rounded = Math.round(value * 100) / 100;
+  return rounded > 0 ? `+${rounded}` : String(rounded);
+}
+
 function ComparisonRow({
   label,
+  caption,
   students,
   value,
 }: {
   label: string;
+  caption?: string;
   students: RankedStudent[];
-  value: (student: RankedStudent) => string | number;
+  value: (student: RankedStudent) => string | number | null;
 }) {
   return (
     <TableRow>
-      <TableCell className="text-muted-foreground">{label}</TableCell>
-      {students.map((student) => (
-        <TableCell key={student.rollNumber}>{value(student)}</TableCell>
-      ))}
+      <TableCell className="text-muted-foreground">
+        {label}
+        {caption && (
+          <p className="mt-1 text-xs font-normal text-muted-foreground/70">
+            {caption}
+          </p>
+        )}
+      </TableCell>
+      {students.map((student) => {
+        const cellValue = value(student);
+        return (
+          <TableCell key={student.rollNumber}>
+            {cellValue === null ? (
+              <span className="text-muted-foreground/60 italic">
+                {NOT_AVAILABLE}
+              </span>
+            ) : (
+              cellValue
+            )}
+          </TableCell>
+        );
+      })}
     </TableRow>
   );
 }

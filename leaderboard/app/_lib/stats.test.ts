@@ -22,6 +22,10 @@ function buildStudent(overrides: Partial<Student>): Student {
       onlineAssessment: 40,
       written: 10,
     },
+    oldBatch: null,
+    oldProvisional: null,
+    oldScore: null,
+    progress: null,
     ...overrides,
   };
 }
@@ -29,9 +33,24 @@ function buildStudent(overrides: Partial<Student>): Student {
 describe("computeOverviewStats", () => {
   it("computes total count, average Score, Provisional count, and Batch count", () => {
     const students = [
-      buildStudent({ rollNumber: "1", batch: "S1", score: 90, provisional: false }),
-      buildStudent({ rollNumber: "2", batch: "T1", score: 70, provisional: true }),
-      buildStudent({ rollNumber: "3", batch: "T1", score: 50, provisional: false }),
+      buildStudent({
+        rollNumber: "1",
+        batch: "S1",
+        score: 90,
+        provisional: false,
+      }),
+      buildStudent({
+        rollNumber: "2",
+        batch: "T1",
+        score: 70,
+        provisional: true,
+      }),
+      buildStudent({
+        rollNumber: "3",
+        batch: "T1",
+        score: 50,
+        provisional: false,
+      }),
     ];
 
     expect(computeOverviewStats(students)).toEqual({
@@ -71,6 +90,8 @@ describe("computeBatchDistribution", () => {
   it("omits Batches with zero Students rather than listing them at count 0", () => {
     const students = [buildStudent({ rollNumber: "1", batch: "T12" })];
 
-    expect(computeBatchDistribution(students)).toEqual([{ batch: "T12", count: 1 }]);
+    expect(computeBatchDistribution(students)).toEqual([
+      { batch: "T12", count: 1 },
+    ]);
   });
 });

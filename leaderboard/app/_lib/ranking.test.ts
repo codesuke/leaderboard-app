@@ -22,14 +22,26 @@ function buildStudent(overrides: Partial<Student>): Student {
       onlineAssessment: 40,
       written: 10,
     },
+    oldBatch: null,
+    oldProvisional: null,
+    oldScore: null,
+    progress: null,
     ...overrides,
   };
 }
 
 describe("rankStudents", () => {
   it("orders by Batch before Score, even when a later Batch has a higher Score", () => {
-    const lowScoreS1 = buildStudent({ rollNumber: "1", batch: "S1", score: 10 });
-    const highScoreT1 = buildStudent({ rollNumber: "2", batch: "T1", score: 99 });
+    const lowScoreS1 = buildStudent({
+      rollNumber: "1",
+      batch: "S1",
+      score: 10,
+    });
+    const highScoreT1 = buildStudent({
+      rollNumber: "2",
+      batch: "T1",
+      score: 99,
+    });
 
     const ranked = rankStudents([highScoreT1, lowScoreS1]);
 

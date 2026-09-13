@@ -22,12 +22,20 @@ export function sortByColumn(
     const aValue = a[column];
     const bValue = b[column];
 
+    // Students with no current-side value for this column (one-sided
+    // Students missing the September snapshot) always sort last.
+    if (aValue === null && bValue === null) return 0;
+    if (aValue === null) return 1;
+    if (bValue === null) return -1;
+
     if (typeof aValue === "number" && typeof bValue === "number") {
       return (aValue - bValue) * factor;
     }
 
-    return String(aValue).localeCompare(String(bValue), undefined, {
-      sensitivity: "base",
-    }) * factor;
+    return (
+      String(aValue).localeCompare(String(bValue), undefined, {
+        sensitivity: "base",
+      }) * factor
+    );
   });
 }

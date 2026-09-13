@@ -39,6 +39,10 @@ yarn-error.log*
 # Never move either file into public/ — that folder is served verbatim.
 /data/*.csv
 
+# raw September re-assessment export (contains student PII) — an intermediate
+# source for generating data/training_groups_September.csv; never committed.
+/data/student_progress.json
+
 # vercel
 .vercel
 

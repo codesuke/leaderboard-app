@@ -27,6 +27,10 @@ function buildStudent(overrides: Partial<Student>): Student {
       onlineAssessment: 40,
       written: 10,
     },
+    oldBatch: null,
+    oldProvisional: null,
+    oldScore: null,
+    progress: null,
     ...overrides,
   };
 }
